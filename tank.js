@@ -1,12 +1,12 @@
-function Tank(imgTank, imgBarrel, imgBullet){
+function Tank(imgTank, imgBarrel, imgBullet, startx, starty, playerId){
     this.reload = 0;
 
     this.body = new createjs.Bitmap(imgTank);
     var bounds = this.body.getBounds();
     this.body.regX = bounds.width/2;
     this.body.regY = bounds.height/2;
-    this.body.x = 100;
-    this.body.y = 100;
+    this.body.x = startx;
+    this.body.y = starty;
     stage.addChild(this.body);
 
     this.barrel = new createjs.Bitmap(imgBarrel);
@@ -20,7 +20,7 @@ function Tank(imgTank, imgBarrel, imgBullet){
         this.reload -= delta;
         var speed = 0.2*delta;
 
-        var gamepad = gamepads[0];
+        var gamepad = gamepads[playerId];
         if(gamepad){
             var lpadx = gamepad.axes[0];
             var lpady = gamepad.axes[1];
