@@ -1,4 +1,4 @@
-function Tank(imgTank){
+function Tank(imgTank, imgBarrel){
 
     this.body = new createjs.Bitmap(imgTank);
     var bounds = this.body.getBounds();
@@ -7,6 +7,13 @@ function Tank(imgTank){
     this.body.x = 100;
     this.body.y = 100;
     stage.addChild(this.body);
+
+    this.barrel = new createjs.Bitmap(imgBarrel);
+    this.barrel.regX = this.barrel.getBounds().width/2;
+    this.barrel.regY = 50;
+    this.barrel.x = this.body.x;
+    this.barrel.y = this.body.y;
+    stage.addChild(this.barrel);
 
     this.update = function(delta){
         var speed = 0.2*delta;
@@ -19,6 +26,14 @@ function Tank(imgTank){
                 this.body.rotation = Math.atan2(lpadx, -lpady) * 360 / (2 * Math.PI);
                 this.body.x += lpadx * speed;
                 this.body.y += lpady * speed;
+                this.barrel.x = this.body.x;
+                this.barrel.y = this.body.y;
+            }
+
+            var rpadx = gamepad.axes[3];
+            var rpady = gamepad.axes[4];
+            if(Math.abs(rpadx) > 0.3 || Math.abs(rpady) > 0.3) {
+                this.barrel.rotation = Math.atan2(rpadx, -rpady) * 360 / (2 * Math.PI);
             }
         }
     }
