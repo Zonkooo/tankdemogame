@@ -1,4 +1,5 @@
-function Tank(imgTank, imgBarrel){
+function Tank(imgTank, imgBarrel, imgBullet){
+    this.reload = 0;
 
     this.body = new createjs.Bitmap(imgTank);
     var bounds = this.body.getBounds();
@@ -16,6 +17,7 @@ function Tank(imgTank, imgBarrel){
     stage.addChild(this.barrel);
 
     this.update = function(delta){
+        this.reload -= delta;
         var speed = 0.2*delta;
 
         var gamepad = gamepads[0];
@@ -34,7 +36,30 @@ function Tank(imgTank, imgBarrel){
             var rpady = gamepad.axes[4];
             if(Math.abs(rpadx) > 0.3 || Math.abs(rpady) > 0.3) {
                 this.barrel.rotation = Math.atan2(rpadx, -rpady) * 360 / (2 * Math.PI);
+
+                if(this.reload < 0) {
+                    var bullet = new createjs.Bitmap(imgBullet);
+                    bullet.regX = bullet.getBounds().width / 2;
+                    bullet.regY = bullet.getBounds().height;
+                    bullet.x = this.barrel.x;
+                    bullet.y = this.barrel.y;
+                    bullet.rotation = this.barrel.rotation;
+                    bullet.dir = normalize({x: rpadx, y: rpady});
+                    var barrelIdx = stage.getChildIndex(this.barrel);
+                    stage.addChildAt(bullet, barrelIdx);
+                    bullets.push(bullet);
+                    this.reload = 300;
+                }
             }
         }
+    }
+
+    function normalize(vec) {
+        var norm = Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+        if (norm != 0) {
+            vec.x = vec.x / norm;
+            vec.y = vec.y / norm;
+        }
+        return vec;
     }
 }
