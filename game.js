@@ -8,12 +8,17 @@ var imgTank2 = new Image();
 var imgBarrel2 = new Image();
 var imgBullet2 = new Image();
 
+var imgExplosion = new Image();
+var spSheetExp;
+
 var tanks = [];
 var bullets = [];
 
 function startGame()
 {
 	stage = new createjs.Stage(document.getElementById("gameCanvas"));
+
+    imgExplosion.src = "res/explosion.png";
 
     imgBullet2.src = "res/bulletBlue.png";
     imgBarrel2.src = "res/barrelBlue.png";
@@ -32,6 +37,15 @@ function launchGame()
     tanks.push(new Tank(imgTank1, imgBarrel1, imgBullet1, 100, 100, 0));
     tanks.push(new Tank(imgTank2, imgBarrel2, imgBullet2, 1100, 700, 1));
 
+    spSheetExp = new createjs.SpriteSheet({
+        images: [imgExplosion],
+        frames: {height: 96, width: 96, regX: 48, regY: 48},
+        animations: {
+            explode: [0, 11, "nothing", 0.4],
+            nothing: 12
+        }
+    });
+
 	createjs.Ticker.setFPS(60);
 	createjs.Ticker.addEventListener("tick", update);
 }
@@ -47,6 +61,12 @@ function update(event)
         var bullet = bullets[b];
         bullet.x += bullet.dir.x * bspeed;
         bullet.y += bullet.dir.y * bspeed;
+        if(bullet.x < -40 || bullet.x > 1240 || bullet.y < -40 || bullet.y > 840)
+        {
+            stage.removeChild(bullet);
+            this.bullets.splice(b, 1);
+            b--;
+        }
     }
 
     checkCollisions();
@@ -75,6 +95,11 @@ function checkCollisions(){
                 t--;
                 stage.removeChild(tank.body);
                 stage.removeChild(tank.barrel);
+
+                var explosion = new createjs.Sprite(spSheetExp, "explode");
+                explosion.x = tank.body.x;
+                explosion.y = tank.body.y;
+                stage.addChild(explosion);
             }
         }
     }
