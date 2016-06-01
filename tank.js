@@ -16,6 +16,8 @@ function Tank(imgTank, imgBarrel, imgBullet, startx, starty, playerId){
     this.barrel.y = this.body.y;
     stage.addChild(this.barrel);
 
+    this.id = playerId;
+
     this.update = function(delta){
         this.reload -= delta;
         var speed = 0.2*delta;
@@ -45,6 +47,7 @@ function Tank(imgTank, imgBarrel, imgBullet, startx, starty, playerId){
                     bullet.y = this.barrel.y;
                     bullet.rotation = this.barrel.rotation;
                     bullet.dir = normalize({x: rpadx, y: rpady});
+                    bullet.owner = playerId;
                     var barrelIdx = stage.getChildIndex(this.barrel);
                     stage.addChildAt(bullet, barrelIdx);
                     bullets.push(bullet);

@@ -49,5 +49,33 @@ function update(event)
         bullet.y += bullet.dir.y * bspeed;
     }
 
+    checkCollisions();
+
 	stage.update(event);
+}
+
+function checkCollisions(){
+    function sqdist(tank, bullet) {
+        var x1 = tank.body.x;
+        var y1 = tank.body.y;
+        var x2 = bullet.x;
+        var y2 = bullet.y;
+        return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+    }
+
+    for (var t = 0; t < tanks.length; t++) {
+        var tank = tanks[t];
+        for (var b = 0; b < bullets.length; b++) {
+            var bullet = bullets[b];
+            if(bullet.owner != tank.id && sqdist(tank, bullet) < 60*60)
+            {
+                bullets.splice(b, 1);
+                stage.removeChild(bullet);
+                tanks.splice(t, 1);
+                t--;
+                stage.removeChild(tank.body);
+                stage.removeChild(tank.barrel);
+            }
+        }
+    }
 }
