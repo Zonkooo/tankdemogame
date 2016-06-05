@@ -14,6 +14,8 @@ function startGame()
 
 function launchGame()
 {
+    initGamepad();
+
     tank = new Tank(imgTank);
 
 	createjs.Ticker.setFPS(60);
@@ -22,7 +24,7 @@ function launchGame()
 
 function update(event)
 {
-    tank.update();
+    tank.update(event.delta);
 
 	stage.update(event);
 }
